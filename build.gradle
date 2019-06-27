@@ -3,24 +3,34 @@ version '1.0-SNAPSHOT'
 
 
 subprojects {
-
-    apply plugin: 'java'
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-    test.enabled = false
-
-    repositories {
-        maven { url "https://maven.aliyun.com/repository/public" }
-        maven { url "https://repo.spring.io/libs-milestone" }
-        maven { url "https://raw.githubusercontent.com/jgaybjone/mvnrepo/master" }
-        maven {
-            url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/'
-        }
-        mavenCentral()
-    }
-
-    dependencies {
-        testCompile group: 'junit', name: 'junit', version: '4.12'
-    }
+	
+	apply plugin: 'java'
+	apply plugin: 'maven'
+	
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+	test.enabled = false
+	
+	repositories {
+		maven { url "https://maven.aliyun.com/repository/public" }
+		maven { url "https://repo.spring.io/libs-milestone" }
+		maven { url "https://raw.githubusercontent.com/jgaybjone/mvnrepo/master" }
+		maven {
+			url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/'
+		}
+		mavenCentral()
+	}
+	
+	dependencies {
+		testCompile group: 'junit', name: 'junit', version: '4.12'
+	}
+	
+	uploadArchives {
+		repositories {
+			mavenDeployer {
+				repository(url: uri('/Users/mac/Documents/chengyi/mvnrepo')) //定义本地maven仓库的地址
+//            repository(url: uri('C:\\Users\\xiongshiyan\\.gradle\\caches\\modules-2\\files-2.1')) //定义本地Gradle仓库的地址
+			}
+		}
+	}
 }

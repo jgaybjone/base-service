@@ -2,4 +2,10 @@ group 'cn.jgayb'
 version '1.0-SNAPSHOT'
 
 dependencies {
+	compileOnly(group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.1.9.RELEASE') {
+//		exclude group: 'org.springframework.data'
+		exclude group: 'org.springframework'
+		exclude group: 'org.aspectj'
+		exclude group: 'org.slf4j'
+	}
 }

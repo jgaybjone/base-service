@@ -2,4 +2,7 @@ group 'cn.jgayb'
 version '1.0-SNAPSHOT'
 
 dependencies {
+	implementation group: 'tk.mybatis', name: 'mapper-base', version: '1.1.5'
+	implementation group: 'tk.mybatis', name: 'mapper-core', version: '1.1.5'
+	implementation group: 'org.mybatis', name: 'mybatis', version: '3.5.1'
 }
