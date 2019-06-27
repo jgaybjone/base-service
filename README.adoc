@@ -12,6 +12,7 @@ Mybatis、通用mapper、Jpa的Base Service，实现了基本的CRUD。
 
 == Mybatis BaseService使用介绍
 
+=== 构建工具依赖
 *Gradle工程*
 [source, groovy]
 ----
@@ -44,4 +45,51 @@ dependencies {
 	<version>1.0-RELEASE</version>
   </dependency>
 
+----
+=== 使用方法
+*自己的Mapper继承IMapper接口*
+[source, java]
+----
+public interface UserMapper extends IMapper<User> {
+
+	User selectById(String id);
+
+	void update(User user);
+
+}
+----
+
+*自己的Service继承BaseService*
+[source,java]
+----
+
+public interface UserService extends BaseService<User> {
+
+}
+
+----
+
+*实现类*
+[source,java]
+----
+@Service
+public class UserServiceImpl implements UserService{
+
+    @Autowird
+    private UserMapper userMapper;
+
+    @Override
+    public UserMapper getMapper(){
+        return this.userMapper;
+    }
+
+    @Override
+    @Transactional
+    public void crudAndConsumer(Consumer<UserMapper> consumer){
+        consumer.accept(userMapper);
+    }
+
+    ...
+
+}
 ----
