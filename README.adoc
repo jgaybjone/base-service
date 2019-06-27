@@ -1,0 +1,11 @@
+= Base Service
+www.jgayb.com;
+:toc: left
+:toc-title: 章节
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+== 简介
+
+Mybatis、通用mapper、Jpa的Base Service，实现了基本的CRUD。
