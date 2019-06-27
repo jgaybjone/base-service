@@ -118,6 +118,7 @@ public class example{
     @Autowird
     private UserService userService;
 
+    //Lambda 函数式优雅使用
 	public void findAndDeletedById(String id){
 	    userService.crudAndConsumer(userMapper -> {
 	        User user = userMapper.selectById(id);
@@ -185,6 +186,7 @@ public class example{
     @Autowird
     private UserService userService;
 
+    //Lambda 函数式优雅使用
 	public void findAndDeletedById(String id){
 	    userService.crudAndConsumer(userMapper -> {
 	        UserDto userDto = userMapper.selectById(id);
@@ -194,3 +196,62 @@ public class example{
 	}
 }
 ----
+
+== 4. Spring data jpa BaseService介绍
+
+=== 4.1 *自己的Service继承BaseService*
+[source,java]
+----
+
+public interface UserService extends BaseService<User> {
+
+}
+
+----
+
+=== 4.2 *Service的实现*
+[source,java]
+----
+@Service
+public class UserServiceImpl implements UserService{
+
+    @Autowird
+    private UserRepository userRepository;
+
+    @Override
+    public UserRepository getRepository(){
+        return this.userRepository;
+    }
+
+    @Override
+    @Transactional
+    public void crudAndConsumer(Consumer<UserRepository> consumer){
+        consumer.accept(userRepository);
+    }
+
+    ...
+
+}
+----
+
+=== 4.3 *方法调用例子*
+[source,java]
+----
+public class example{
+
+    @Autowird
+    private UserService userService;
+
+    //Lambda 函数式优雅使用
+	public void findAndDeletedById(String id){
+	    userService.crudAndConsumer(userRepository -> {
+	        User user = userRepository.findById(id);
+	        //CRUD
+	        ...
+
+	        userRepository.save(user);
+	    });
+	}
+}
+----
+
