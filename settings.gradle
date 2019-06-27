@@ -1,0 +1,5 @@
+rootProject.name = 'base-service'
+include 'mybatis-service'
+include 'tk-mybatis-service'
+include 'jpa-service'
+
