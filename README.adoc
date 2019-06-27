@@ -10,10 +10,9 @@ www.jgayb.com;
 
 Mybatis、通用mapper、Jpa的Base Service，实现了基本的CRUD。
 
-== Mybatis BaseService使用介绍
+== 1. 依赖
 
-=== 构建工具依赖
-*Gradle工程*
+=== 1.1 *Gradle工程*
 [source, groovy]
 ----
 repositories {
@@ -24,11 +23,14 @@ repositories {
 }
 
 dependencies {
-	compile 'cn.jgayb:mybatis-service:1.0-RELEASE'
+	//下面根据情况三选一
+	compile 'cn.jgayb:mybatis-service:1.0-RELEASE' //mybatis项目使用
+	compile 'cn.jgayb:tk-mybatis-service:1.0-RELEASE' //通用mapper项目使用
+	compile 'cn.jgayb:jpa-service:1.0-RELEASE' //spring data jpa项目使用
 }
 
 ----
-*Maven工程*
+=== 1.2 *Maven工程*
 [source, xml]
 ----
   <repositories>
@@ -38,16 +40,30 @@ dependencies {
       <url>https://raw.githubusercontent.com/jgaybjone/mvnrepo/master</url>
     </repository>
   </repositories>
-
-  <dependency>
-    <groupId>cn.jgayb</groupId>
-	<artifactId>mybatis-service</artifactId>
-	<version>1.0-RELEASE</version>
-  </dependency>
+  <dependencies>
+  	<!--下面根据情况三选一 -->
+  	<dependency>
+    	<groupId>cn.jgayb</groupId>
+		<artifactId>mybatis-service</artifactId>
+		<version>1.0-RELEASE</version>
+  	</dependency>
+  	<dependency>
+    	<groupId>cn.jgayb</groupId>
+		<artifactId>tk-mybatis-service</artifactId>
+		<version>1.0-RELEASE</version>
+  	</dependency>
+  	<dependency>
+    	<groupId>cn.jgayb</groupId>
+		<artifactId>jpa-service</artifactId>
+		<version>1.0-RELEASE</version>
+  	</dependency>
+  </dependencies>
 
 ----
-=== 使用方法
-*自己的Mapper继承IMapper接口*
+
+== 2. Mybatis BaseService使用介绍
+
+=== 2.1 *自己的Mapper继承IMapper接口*
 [source, java]
 ----
 public interface UserMapper extends IMapper<User> {
@@ -59,7 +75,7 @@ public interface UserMapper extends IMapper<User> {
 }
 ----
 
-*自己的Service继承BaseService*
+=== 2.2 *自己的Service继承BaseService*
 [source,java]
 ----
 
@@ -69,7 +85,7 @@ public interface UserService extends BaseService<User> {
 
 ----
 
-*实现类*
+=== 2.3 *实现类*
 [source,java]
 ----
 @Service
@@ -91,5 +107,90 @@ public class UserServiceImpl implements UserService{
 
     ...
 
+}
+----
+
+=== 2.4 *方法调用例子*
+[source,java]
+----
+public class example{
+
+    @Autowird
+    private UserService userService;
+
+	public void findAndDeletedById(String id){
+	    userService.crudAndConsumer(userMapper -> {
+	        User user = userMapper.selectById(id);
+	        user.setDisable(true);
+	        userMapper.updateBySelective(user);
+	    });
+	}
+}
+----
+
+== 3. 通用mapper BaseService使用介绍
+
+=== 3.1 所有的mapper都继承BaseMapper
+[source,java]
+----
+public interface UserMapper extends BaseMapper<User> {
+
+	/**
+	*  通用mapper已经很有很多方法了
+	*/
+	UserDto selectById(String id);
+
+}
+----
+=== 3.2 *自己的Service继承BaseService*
+[source,java]
+----
+
+public interface UserService extends BaseService<User> {
+
+}
+
+----
+
+=== 3.3 *实现类*
+[source,java]
+----
+@Service
+public class UserServiceImpl implements UserService{
+
+    @Autowird
+    private UserMapper userMapper;
+
+    @Override
+    public UserMapper getMapper(){
+        return this.userMapper;
+    }
+
+    @Override
+    @Transactional
+    public void crudAndConsumer(Consumer<UserMapper> consumer){
+        consumer.accept(userMapper);
+    }
+
+    ...
+
+}
+----
+
+=== 3.4 *方法调用例子*
+[source,java]
+----
+public class example{
+
+    @Autowird
+    private UserService userService;
+
+	public void findAndDeletedById(String id){
+	    userService.crudAndConsumer(userMapper -> {
+	        UserDto userDto = userMapper.selectById(id);
+	        userDto.setDisable(true);
+	        userMapper.updateBySelective(userDto);
+	    });
+	}
 }
 ----
