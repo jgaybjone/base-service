@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,18 +28,22 @@ public interface BaseService<T, I> {
 
     /**
      * 消费函数中同时存在crud时，子类需要重写并使用事物注解
+     * 注解{@link Transactional}在强制cglib动态代理的时候不起作用
      *
      * @param consumer 消费函数
      */
+    @Transactional
     default <S extends JpaRepository<T, I>> void crudAndConsumer(Consumer<S> consumer) {
         consumer.accept(getRepository());
     }
 
     /**
      * 消费函数中同时存在crud时，子类需要重写并使用事物注解
+     * 注解{@link Transactional}在强制cglib动态代理的时候不起作用
      *
      * @param function 应用函数
      */
+    @Transactional
     default <E, S extends JpaRepository<T, I>> E crudAndFunction(Function<S, E> function) {
         return function.apply(getRepository());
     }

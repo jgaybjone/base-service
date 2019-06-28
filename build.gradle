@@ -6,7 +6,7 @@ subprojects {
 	
 	apply plugin: 'java'
 	apply plugin: 'maven'
-	apply plugin:'maven-publish'
+	apply plugin: 'maven-publish'
 	
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
@@ -23,6 +23,10 @@ subprojects {
 	}
 	
 	dependencies {
+		compileOnly(group: 'org.springframework', name: 'spring-tx', version: '5.1.8.RELEASE') {
+			exclude group: 'org.springframework'
+		}
+		
 		testCompile group: 'junit', name: 'junit', version: '4.12'
 	}
 	
@@ -55,7 +59,7 @@ subprojects {
 			}
 		}
 	}
-	
+
 //	uploadArchives {
 //		publications {
 //			mavenJava(MavenPublication) {
@@ -74,6 +78,6 @@ subprojects {
 //			}
 //		}
 //	}
-
+	
 	
 }

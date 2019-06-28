@@ -3,6 +3,7 @@ package cn.jgayb.dao.utils.tkmybatis;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
@@ -31,18 +32,22 @@ public interface BaseService<T> {
 
     /**
      * 消费函数中同时存在crud时，子类需要重写并使用事物注解
+     * 注解{@link Transactional}在强制cglib动态代理的时候不起作用
      *
      * @param consumer 消费函数
      */
+    @Transactional
     default <S extends BaseMapper<T>> void crueAndConsumer(Consumer<S> consumer) {
         consumer.accept(getMapper());
     }
 
     /**
      * 消费函数中同时存在crud时，子类需要重写并使用事物注解
+     * 注解{@link Transactional}在强制cglib动态代理的时候不起作用
      *
      * @param function 应用函数
      */
+    @Transactional
     default <E, S extends BaseMapper<T>> E crueAndFunction(Function<S, E> function) {
         return function.apply(getMapper());
     }
