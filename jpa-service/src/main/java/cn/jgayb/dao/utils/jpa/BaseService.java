@@ -24,7 +24,7 @@ public interface BaseService<T, I> {
      *
      * @return jpaRepository
      */
-    <S extends JpaRepository<T, I>> S getRepository();
+    JpaRepository<T, I> getRepository();
 
     /**
      * 消费函数中同时存在crud时，子类需要重写并使用事物注解
@@ -33,7 +33,7 @@ public interface BaseService<T, I> {
      * @param consumer 消费函数
      */
     @Transactional
-    default <S extends JpaRepository<T, I>> void crudAndConsumer(Consumer<S> consumer) {
+    default void crudAndConsumer(Consumer<JpaRepository<T, I>> consumer) {
         consumer.accept(getRepository());
     }
 
@@ -44,7 +44,7 @@ public interface BaseService<T, I> {
      * @param function 应用函数
      */
     @Transactional
-    default <E, S extends JpaRepository<T, I>> E crudAndFunction(Function<S, E> function) {
+    default <E> E crudAndFunction(Function<JpaRepository<T, I>, E> function) {
         return function.apply(getRepository());
     }
 

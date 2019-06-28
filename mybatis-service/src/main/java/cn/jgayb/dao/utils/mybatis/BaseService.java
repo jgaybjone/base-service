@@ -27,7 +27,7 @@ public interface BaseService<T> {
      * @param consumer 消费函数
      */
     @Transactional
-    default <S extends IMapper<T>> void crudAndConsumer(Consumer<S> consumer) {
+    default void crudAndConsumer(Consumer<IMapper<T>> consumer) {
         consumer.accept(getMapper());
     }
 
@@ -38,7 +38,7 @@ public interface BaseService<T> {
      * @param function 应用函数
      */
     @Transactional
-    default <E, S extends IMapper<T>> E crudAndFunction(Function<S, E> function) {
+    default <E> E crudAndFunction(Function<IMapper<T>, E> function) {
         return function.apply(getMapper());
     }
 }

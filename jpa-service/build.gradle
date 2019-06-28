@@ -1,5 +1,5 @@
 group 'cn.jgayb'
-version '1.1-RELEASE'
+version '1.2-RELEASE'
 
 dependencies {
 	compileOnly(group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.1.9.RELEASE') {

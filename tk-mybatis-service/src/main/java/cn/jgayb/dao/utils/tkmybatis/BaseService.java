@@ -18,7 +18,7 @@ import java.util.function.Function;
  */
 public interface BaseService<T> {
 
-    <S extends BaseMapper<T>> S getMapper();
+    BaseMapper<T> getMapper();
 
     /**
      * xml的命名空间
@@ -37,7 +37,7 @@ public interface BaseService<T> {
      * @param consumer 消费函数
      */
     @Transactional
-    default <S extends BaseMapper<T>> void crueAndConsumer(Consumer<S> consumer) {
+    default void crueAndConsumer(Consumer<BaseMapper<T>> consumer) {
         consumer.accept(getMapper());
     }
 
@@ -48,7 +48,7 @@ public interface BaseService<T> {
      * @param function 应用函数
      */
     @Transactional
-    default <E, S extends BaseMapper<T>> E crueAndFunction(Function<S, E> function) {
+    default <E> E crueAndFunction(Function<BaseMapper<T>, E> function) {
         return function.apply(getMapper());
     }
 
