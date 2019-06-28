@@ -78,7 +78,7 @@ public interface UserMapper extends IMapper<User> {
 [source,java]
 ----
 
-public interface UserService extends BaseService<User> {
+public interface UserService extends BaseService<User, UserMapper> {
 
 }
 
@@ -146,7 +146,7 @@ public interface UserMapper extends BaseMapper<User> {
 [source,java]
 ----
 
-public interface UserService extends BaseService<User> {
+public interface UserService extends BaseService<User, UserMapper> {
 
 }
 
@@ -202,7 +202,7 @@ public class example{
 [source,java]
 ----
 
-public interface UserService extends BaseService<User> {
+public interface UserService extends BaseService<User, String, UserRepository> {
 
 }
 
