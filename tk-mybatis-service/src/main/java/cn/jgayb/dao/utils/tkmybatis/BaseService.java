@@ -16,9 +16,9 @@ import java.util.function.Function;
  * Date 2019-06-27 17:00
  * Created by Wang jun gang
  */
-public interface BaseService<T> {
+public interface BaseService<T, S extends BaseMapper<T>> {
 
-    BaseMapper<T> getMapper();
+    S getMapper();
 
     /**
      * xml的命名空间
@@ -37,7 +37,7 @@ public interface BaseService<T> {
      * @param consumer 消费函数
      */
     @Transactional
-    default void crueAndConsumer(Consumer<BaseMapper<T>> consumer) {
+    default void crueAndConsumer(Consumer<S> consumer) {
         consumer.accept(getMapper());
     }
 
@@ -48,7 +48,7 @@ public interface BaseService<T> {
      * @param function 应用函数
      */
     @Transactional
-    default <E> E crueAndFunction(Function<BaseMapper<T>, E> function) {
+    default <E> E crueAndFunction(Function<S, E> function) {
         return function.apply(getMapper());
     }
 

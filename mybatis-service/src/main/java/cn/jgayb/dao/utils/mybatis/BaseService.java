@@ -11,14 +11,13 @@ import java.util.function.Function;
  * Date 2019-06-27 16:44
  * Created by Wang jun gang
  */
-public interface BaseService<T> {
+public interface BaseService<T, S extends IMapper<T>> {
 
 
     /**
-     * @param <S> 限定接口
      * @return IMapper 子接口
      */
-    <S extends IMapper> S getMapper();
+    S getMapper();
 
     /**
      * 消费函数中同时存在crud时，子类需要重写并使用事物注解
@@ -27,7 +26,7 @@ public interface BaseService<T> {
      * @param consumer 消费函数
      */
     @Transactional
-    default void crudAndConsumer(Consumer<IMapper<T>> consumer) {
+    default void crudAndConsumer(Consumer<S> consumer) {
         consumer.accept(getMapper());
     }
 
@@ -38,7 +37,7 @@ public interface BaseService<T> {
      * @param function 应用函数
      */
     @Transactional
-    default <E> E crudAndFunction(Function<IMapper<T>, E> function) {
+    default <E> E crudAndFunction(Function<S, E> function) {
         return function.apply(getMapper());
     }
 }

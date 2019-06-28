@@ -17,14 +17,14 @@ import java.util.function.Function;
  * @param <I> key class
  * @since 1.8
  */
-public interface BaseService<T, I> {
+public interface BaseService<T, I, J extends JpaRepository<T, I>> {
 
     /**
      * get jpa repository
      *
      * @return jpaRepository
      */
-    JpaRepository<T, I> getRepository();
+    J getRepository();
 
     /**
      * 消费函数中同时存在crud时，子类需要重写并使用事物注解
@@ -33,7 +33,7 @@ public interface BaseService<T, I> {
      * @param consumer 消费函数
      */
     @Transactional
-    default void crudAndConsumer(Consumer<JpaRepository<T, I>> consumer) {
+    default void crudAndConsumer(Consumer<J> consumer) {
         consumer.accept(getRepository());
     }
 
@@ -44,7 +44,7 @@ public interface BaseService<T, I> {
      * @param function 应用函数
      */
     @Transactional
-    default <E> E crudAndFunction(Function<JpaRepository<T, I>, E> function) {
+    default <E> E crudAndFunction(Function<J, E> function) {
         return function.apply(getRepository());
     }
 
