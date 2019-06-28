@@ -6,6 +6,7 @@ subprojects {
 	
 	apply plugin: 'java'
 	apply plugin: 'maven'
+	apply plugin:'maven-publish'
 	
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
@@ -25,12 +26,54 @@ subprojects {
 		testCompile group: 'junit', name: 'junit', version: '4.12'
 	}
 	
-	uploadArchives {
+	
+	task sourcesJar(type: Jar, dependsOn: classes) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+	
+	task javadocJar(type: Jar, dependsOn: javadoc) {
+		classifier = 'javadoc'
+		from javadoc.destinationDir
+	}
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				groupId = "$project.group"
+				artifactId = "$project.name"
+				version = "$project.version"
+				from components.java
+				artifact sourcesJar
+				artifact javadocJar
+			}
+		}
 		repositories {
-			mavenDeployer {
-				repository(url: uri('/Users/mac/Documents/chengyi/mvnrepo')) //定义本地maven仓库的地址
+			maven {
+				url uri('/Users/mac/Documents/chengyi/mvnrepo')
+//				repository(url: uri('/Users/mac/Documents/chengyi/mvnrepo')) //定义本地maven仓库的地址
 //            repository(url: uri('C:\\Users\\xiongshiyan\\.gradle\\caches\\modules-2\\files-2.1')) //定义本地Gradle仓库的地址
 			}
 		}
 	}
+	
+//	uploadArchives {
+//		publications {
+//			mavenJava(MavenPublication) {
+//				groupId = "$project.group"
+//				artifactId = "$project.name"
+//				version = "$project.version"
+//				from components.java
+//				artifact sourcesJar
+//				artifact javadocJar
+//			}
+//		}
+//		repositories {
+//			mavenDeployer {
+//				repository(url: uri('/Users/mac/Documents/chengyi/mvnrepo')) //定义本地maven仓库的地址
+////            repository(url: uri('C:\\Users\\xiongshiyan\\.gradle\\caches\\modules-2\\files-2.1')) //定义本地Gradle仓库的地址
+//			}
+//		}
+//	}
+
+	
 }

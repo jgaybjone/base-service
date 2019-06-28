@@ -13,7 +13,7 @@ Mybatis、通用mapper、Jpa的Base Service，实现了基本的CRUD。
 == 1. 依赖
 
 === 1.1 *Gradle工程*
-[source, groovy]
+[source,groovy]
 ----
 repositories {
 
@@ -31,7 +31,7 @@ dependencies {
 
 ----
 === 1.2 *Maven工程*
-[source, xml]
+[source,mxml]
 ----
   <repositories>
     <repository>
@@ -58,7 +58,6 @@ dependencies {
 		<version>1.0-RELEASE</version>
   	</dependency>
   </dependencies>
-
 ----
 
 == 2. Mybatis BaseService使用介绍
