@@ -57,11 +57,12 @@ public interface BaseService<T, S extends BaseMapper<T>> {
      *
      * @param entities 插入实体集合
      */
+    @Transactional
     default void batchInsert(List<T> entities) {
-        try (final SqlSession session = sessionFactory().openSession(ExecutorType.BATCH)) {
-            entities.forEach(e -> session.insert(getNamespace() + ".insertSelective", e));
-            session.commit();
-        }
+        final SqlSession session = sessionFactory().openSession(ExecutorType.BATCH);
+        @SuppressWarnings("unchecked") final S mapper = (S) session.getMapper(getMapper().getClass());
+        entities.forEach(mapper::insertSelective);
+        session.commit();
     }
 
     /**
@@ -69,12 +70,12 @@ public interface BaseService<T, S extends BaseMapper<T>> {
      *
      * @param entities 实体集合
      */
+    @Transactional
     default void batchUpdate(List<T> entities) {
-
-        try (final SqlSession session = sessionFactory().openSession(ExecutorType.BATCH)) {
-            entities.forEach(e -> session.update(getNamespace() + ".updateByPrimaryKeySelective", e));
-            session.commit();
-        }
+        final SqlSession session = sessionFactory().openSession(ExecutorType.BATCH);
+        @SuppressWarnings("unchecked") final S mapper = (S) session.getMapper(getMapper().getClass());
+        entities.forEach(mapper::updateByPrimaryKeySelective);
+        session.commit();
     }
 
     /**
