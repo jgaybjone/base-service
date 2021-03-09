@@ -53,7 +53,7 @@ subprojects {
 		}
 		repositories {
 			maven {
-				url uri('/Users/mac/Documents/chengyi/mvnrepo')
+				url uri('/Users/jungangwang/idea-projects/ycdarenguan/mvnrepo')
 //				repository(url: uri('/Users/mac/Documents/chengyi/mvnrepo')) //定义本地maven仓库的地址
 //            repository(url: uri('C:\\Users\\xiongshiyan\\.gradle\\caches\\modules-2\\files-2.1')) //定义本地Gradle仓库的地址
 			}
