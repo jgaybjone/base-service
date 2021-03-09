@@ -37,7 +37,7 @@ public interface BaseService<T, S extends BaseMapper<T>> {
      * @param consumer 消费函数
      */
     @Transactional
-    default void crueAndConsumer(Consumer<S> consumer) {
+    default void crudAndConsumer(Consumer<S> consumer) {
         consumer.accept(getMapper());
     }
 
@@ -48,8 +48,33 @@ public interface BaseService<T, S extends BaseMapper<T>> {
      * @param function 应用函数
      */
     @Transactional
-    default <E> E crueAndFunction(Function<S, E> function) {
+    default <E> E crudAndFunction(Function<S, E> function) {
         return function.apply(getMapper());
+    }
+
+    @Transactional
+    default void batchCrudAndConsumer(Consumer<S> consumer) {
+        try (final SqlSession session = sessionFactory().openSession(ExecutorType.BATCH)) {
+            final S mapper = (S) session.getMapper(getMapper().getClass());
+            consumer.accept(mapper);
+            session.commit();
+        }
+    }
+
+    /**
+     * 消费函数中同时存在crud时，子类需要重写并使用事物注解
+     * 注解{@link Transactional}在强制cglib动态代理的时候不起作用
+     *
+     * @param function 应用函数
+     */
+    @Transactional
+    default <E> E batchCrudAndFunction(Function<S, E> function) {
+        try (final SqlSession session = sessionFactory().openSession(ExecutorType.BATCH)) {
+            @SuppressWarnings("unchecked") final S mapper = (S) session.getMapper(getMapper().getClass());
+            final E apply = function.apply(mapper);
+            session.commit();
+            return apply;
+        }
     }
 
     /**
@@ -59,10 +84,12 @@ public interface BaseService<T, S extends BaseMapper<T>> {
      */
     @Transactional
     default void batchInsert(List<T> entities) {
-        final SqlSession session = sessionFactory().openSession(ExecutorType.BATCH);
-        @SuppressWarnings("unchecked") final S mapper = (S) session.getMapper(getMapper().getClass());
-        entities.forEach(mapper::insertSelective);
-        session.commit();
+
+        try (final SqlSession session = sessionFactory().openSession(ExecutorType.BATCH)) {
+            @SuppressWarnings("unchecked") final S mapper = (S) session.getMapper(getMapper().getClass());
+            entities.forEach(mapper::insertSelective);
+            session.commit();
+        }
     }
 
     /**
@@ -72,10 +99,11 @@ public interface BaseService<T, S extends BaseMapper<T>> {
      */
     @Transactional
     default void batchUpdate(List<T> entities) {
-        final SqlSession session = sessionFactory().openSession(ExecutorType.BATCH);
+        try (final SqlSession session = sessionFactory().openSession(ExecutorType.BATCH)) {
         @SuppressWarnings("unchecked") final S mapper = (S) session.getMapper(getMapper().getClass());
         entities.forEach(mapper::updateByPrimaryKeySelective);
         session.commit();
+        }
     }
 
     /**
